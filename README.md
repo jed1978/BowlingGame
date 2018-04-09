@@ -3,36 +3,64 @@ Bowling Game Kata
 
 [bowling-score]: http://www.wpclipart.com/recreation/sports/bowling/bowling_scoresheet_example.png "bowling score card"
 
+# Kata objective
+The main goal is practice object oriented design via refactoring.
+
+# Kata domain
+##Goal
+ Calculate the score for one line of American Ten-Pin Bowling.
 
 ## Scoring bowling
 
 ![Bowling scoreboard][bowling-score]
 
-一局保齡球的計分方法以十格計分格為計算原則 , 球手需在每一格儘量打中全部球瓶。如未能一投全中，可多投一球。
+## Scoring rules
+- Each game, or _line_, of bowling includes ten turns, or _frames_, for the bowler.
+- In each frame, the bowler gets up to two tries, or _rolls__, to knock down all the pins.
+- If in two tries, he fails to knock them all down, his score for that frame is the total number of pins knocked down in his two tries.
+- If in two tries he knocks them all down, this is called a _spare_ and his score for the frame is ten plus the number of pins knocked down on his next throw (in his next turn).
+- If on his first try in the frame he knocks down all the pins, this is called a _strike_. His turn is over, and his score for the frame is ten plus the simple total of the pins knocked down in his next two rolls.
+- If he gets a spare or strike in the last (tenth) frame, the bowler gets to throw one or two more bonus balls, respectively. These bonus throws are taken as part of the same turn. If the bonus throws knock down all the pins, the process does not repeat: the bonus throws are only used to calculate the score of the final frame.
+- The game score is the total of all frame scores.
 
-每一個計分格所得的分數是該格所投球瓶總數(即在該格的投球擊倒球瓶多少支就有多少分數)，但如果能在第一球打全中，該格所得分數會加上後面所投二球所擊倒的瓶數；如打補中，該格所得分數會加上後面所投一球所擊倒瓶數。每一個計分格的分數會累積到下一個計分格。
+## Input
+- String with the representation of the line.
+- Each character represents one frame.
+- The characters follow the rules:
+	- X when is an strike (knock the 10 pins in the first try of the frame)
+	- / when in the second try throws the remaining pins: spare.
+	- - when no pin is knock in a try.
+	- Number of the pins knock in a try.
+- Example of the representation :
+	- "35--6/--X--2/------" : 3+5 + 0+0 + 6+4 + 0+0 + 10 + 0+0 + 2+8 + 0+0 + 0+0 + 0+0
 
-**在第10個計分格亦以同樣方法計算，即如果在第10格打到補中或全中就可額外多打一球或二球以計算第十格的累積總分。
+# Kata simplifications
+- We will not check for valid rolls.
+- We will not check for correct number of rolls and frames.
+- We will not provide scores for intermediate frames.
 
-Strike(一個計分格中的第一投擊倒十支瓶) , 當格分數會加上後面所投二球所擊倒瓶數  .
+# Some test cases
+- "9-9-9-9-9-9-9-9-9-9-":
+	- Meaning: 10 pairs of 9 and miss (20 rolls)
+	- Score: 90 (9 + 9 + 9 + 9 + 9 + 9 + 9 + 9 + 9 + 9)
+- "5/5/5/5/5/5/5/5/5/5/5"
+	- Meaning: 10 pairs of 5 and spare, with a final 5 (21 rolls)
+	- Score: 150 (10+5 + 10+5 + 10+5 + 10+5 + 10+5 + 10+5 + 10+5 + 10+5 + 10+5 + 10+5)
+- "XXXXXXXXXXXX":
+	- Meaning: 10 strikes + 2 strikes for the extra bonus (12 rolls)
+	- Score: 300 (10+10+10 + 10+10+10 + 10+10+10 + 10+10+10 + 10+10+10 + 10+10+10 + 10+10+10 + 10+10+10 + 10+10+10 + 10+10+10)
 
-Spare(一個計分格中要用二球擊倒十支瓶) , 當格分數會加上後面所投一球所擊倒瓶數  .
-
-
-## The requirements
-
-* Write class "BowlingGame" that has two methods
-	- *roll(pins)*
-		- called each time the player rolls a ball. The argument is the number of pins knocked down.
-	- *score()*
-		- called only after the very end of the game. Returns total score of the game.
-
-
-## Quick design session
-
-One game  
-A game has 10 frames  
-A frame has one or two rolls  
-The tenth frame has two or three rolls. It's different from all the other frames  
-The score function must iterate through all the frames, and calculate all their scores  
-The score for a spare or a strike depends on the frames successor
+# Working process
+1. Solve the kata using the simplest solution that I could find.
+2. Refactor to objects to achieve single responsibility principle.
+3. Following the Object Calisthenics rules:
+	1. Only one level of indentation per method
+	- Don't use the else keyword
+	- Wrap all primitives and strings
+	- First class collections
+	- One dot per line
+	- Don't abbreviate
+	- Keep all entities small
+	- No classes with more than two instance variables
+	- No getters/setters/properties
+4. Dividing in packages and reduce coupling between them.
